@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from './entity/user.entity.';
+import { UserEntity } from './entity/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -12,20 +12,11 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    const existUser = await this.getUserByPhoneNumber(dto.phone_number);
-
-    if (existUser) {
-      throw new HttpException(
-        { status: false, error: 'Номер телофона уже зарегистрирован' },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     try {
       return await this.userRepository.save(dto);
     } catch (e) {
       throw new HttpException(
-        { status: false, error: 'Не удалось зарегистрировать пользователя' },
+        { status: false, error: 'Не удалось создать пользователя' },
         HttpStatus.BAD_REQUEST,
       );
     }

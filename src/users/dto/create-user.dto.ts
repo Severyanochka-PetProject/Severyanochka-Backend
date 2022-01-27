@@ -24,6 +24,5 @@ export class CreateUserDto {
     example: 'nikolay.png',
     description: 'Url аватарки пользователя (может быть пустым!)',
   })
-  @ApiProperty()
   avatar_url?: string;
 }
