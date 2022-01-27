@@ -7,7 +7,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -18,6 +18,10 @@ import { AuthJwtGuard } from '../auth/auth-jwt.guard';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+  })
   @ApiOperation({ summary: 'Создание пользователя' })
   @ApiResponse({ status: HttpStatus.CREATED, type: CreateUserDto })
   @UseGuards(AuthJwtGuard)
@@ -27,6 +31,10 @@ export class UsersController {
     return this.userService.createUser(userDto);
   }
 
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+  })
   @ApiOperation({ summary: 'Получение списка пользователей' })
   @ApiResponse({ status: HttpStatus.OK, type: [CreateUserDto] })
   @UseGuards(AuthJwtGuard)

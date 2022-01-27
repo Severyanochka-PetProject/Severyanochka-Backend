@@ -10,6 +10,7 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'Молчанов',
     description: 'Фамилия пользователя',
+    required: false,
   })
   last_name?: string;
 
@@ -17,12 +18,12 @@ export class CreateUserDto {
     example: '79162265523',
     description: 'Номер  телефона',
   })
-  @ApiProperty()
   phone_number: string;
 
   @ApiProperty({
     example: 'nikolay.png',
     description: 'Url аватарки пользователя (может быть пустым!)',
+    required: false,
   })
   avatar_url?: string;
 }

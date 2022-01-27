@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from './dto/login.dto';
+import { TokensDto } from './dto/tokens.dto';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +12,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(userDto: CreateUserDto) {
+  async login(userDto: LoginDto) {
     const user = await this.userService.getUserByPhoneNumber(
       userDto.phone_number,
     );
@@ -25,7 +27,7 @@ export class AuthService {
       );
     }
 
-    return this.generateToken(userDto);
+    return this.generateToken(user);
   }
 
   async registration(userDto: CreateUserDto) {
@@ -47,7 +49,7 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  async generateToken(user: CreateUserDto) {
+  async generateToken(user: CreateUserDto): Promise<TokensDto> {
     const payload = { phone_number: user.phone_number };
     return {
       access_token: this.jwtService.sign(payload),
