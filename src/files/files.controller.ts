@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
   HttpStatus,
   Param,
   Post,
@@ -15,7 +14,6 @@ import { FilesService } from './files.service';
 import { diskStorage } from 'multer';
 import e from 'express';
 import { CreateImageDto } from './dto/create-image.dto';
-import * as fs from 'fs';
 
 @ApiTags('Изображения')
 @Controller('images')
@@ -59,16 +57,6 @@ export class FilesController {
   @Get('/get/:fileName')
   @HttpCode(HttpStatus.OK)
   async getImage(@Param('fileName') fileName: string) {
-    try {
-      return await fs.readFileSync(`./images/${fileName}`);
-    } catch (e) {
-      throw new HttpException(
-        {
-          status: false,
-          error: 'Не удалось прочитать файл',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    return this.fileService.getFile(fileName);
   }
 }
