@@ -16,6 +16,12 @@ export class CreateUserDto {
 
   @ApiProperty({
     example: '79162265523',
+    description: 'Пароль от аккаунта',
+  })
+  password: string;
+
+  @ApiProperty({
+    example: '79162265523',
     description: 'Номер  телефона',
   })
   phone_number: string;

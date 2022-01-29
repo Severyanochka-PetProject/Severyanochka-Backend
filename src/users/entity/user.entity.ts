@@ -27,4 +27,9 @@ export class UserEntity {
     nullable: true,
   })
   avatar_url: string;
+
+  @Column('character varying', {
+    length: 16,
+  })
+  password: string;
 }

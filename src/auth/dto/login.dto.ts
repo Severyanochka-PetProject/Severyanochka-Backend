@@ -7,4 +7,11 @@ export class LoginDto {
     description: 'Номер телофона пользователя',
   })
   phone_number: string;
+
+  @ApiProperty({
+    required: true,
+    example: 'Test1234',
+    description: 'Пароль от аккаунта',
+  })
+  password: string;
 }
