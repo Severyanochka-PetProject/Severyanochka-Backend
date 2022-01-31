@@ -32,7 +32,7 @@ export class AuthController {
 
     response.cookie('access', tokens.access_token, { httpOnly: true });
 
-    return tokens;
+    return tokens.refresh_token;
   }
 
   @ApiResponse({ type: TokensDto })
