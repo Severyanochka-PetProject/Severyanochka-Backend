@@ -1,5 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 
 import { AuthService } from './auth.service';
 
@@ -16,8 +24,15 @@ export class AuthController {
   @ApiResponse({ type: TokensDto })
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  login(@Body() userDto: LoginDto) {
-    return this.authService.login(userDto);
+  async login(
+    @Body() userDto: LoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const tokens: TokensDto = await this.authService.login(userDto);
+
+    response.cookie('access', tokens.access_token, { httpOnly: true });
+
+    return tokens;
   }
 
   @ApiResponse({ type: TokensDto })

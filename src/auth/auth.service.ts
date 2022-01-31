@@ -27,6 +27,16 @@ export class AuthService {
       );
     }
 
+    if (user.password !== userDto.password) {
+      throw new HttpException(
+        {
+          status: false,
+          error: 'Неверный номер телефона или пароль',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     return this.generateToken(user);
   }
 
@@ -49,10 +59,11 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  async generateToken(user: CreateUserDto): Promise<TokensDto> {
+  async generateToken(user: CreateUserDto) {
     const payload = { phone_number: user.phone_number };
     return {
       access_token: this.jwtService.sign(payload),
+      refresh_token: '',
     };
   }
 }
