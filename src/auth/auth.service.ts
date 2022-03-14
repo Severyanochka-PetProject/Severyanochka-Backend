@@ -3,7 +3,6 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
-import { TokensDto } from './dto/tokens.dto';
 
 @Injectable()
 export class AuthService {
@@ -63,7 +62,7 @@ export class AuthService {
     const payload = { phone_number: user.phone_number };
     return {
       access_token: this.jwtService.sign(payload),
-      refresh_token: '',
+      refresh_token: 'test',
     };
   }
 }
