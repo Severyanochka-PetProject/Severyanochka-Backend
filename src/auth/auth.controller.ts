@@ -1,13 +1,15 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
 
@@ -30,9 +32,9 @@ export class AuthController {
   ) {
     const tokens: TokensDto = await this.authService.login(userDto);
 
-    response.cookie('access', tokens.access_token, { httpOnly: true });
+    response.cookie('refresh', tokens.refresh_token, { httpOnly: true });
 
-    return tokens.refresh_token;
+    return tokens.access_token;
   }
 
   @ApiResponse({ type: TokensDto })
@@ -40,5 +42,19 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   registration(@Body() userDto: CreateUserDto) {
     return this.authService.registration(userDto);
+  }
+
+  @ApiResponse({ type: TokensDto })
+  @Get('/refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Req() request: Request, @Res({passthrough: true}) response: Response) {
+      const { refresh } = request.cookies;
+      const tokens: TokensDto = await this.authService.refresh(refresh);
+     
+      response.cookie('refresh', tokens.refresh_token, { httpOnly: true });
+      
+      console.log(tokens);
+
+      return tokens.access_token;
   }
 }

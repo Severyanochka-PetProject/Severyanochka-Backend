@@ -18,13 +18,16 @@ export class AuthJwtGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
 
     try {
-      const access = req.cookies.access;
-
+      const access = req.headers.authorization;
+      console.log(req.headers);
+      console.log(req.headers.authorization);
       if (!access) {
         throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
       }
 
-      req.payload = this.jwtService.verify(access);
+      req.payload = this.jwtService.verify(access, {
+        secret: 'service-testqwe232',
+      });
       return true;
     } catch (e) {
       throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);

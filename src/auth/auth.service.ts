@@ -3,6 +3,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
+import { TokensDto } from "./dto/tokens.dto";
 
 @Injectable()
 export class AuthService {
@@ -36,7 +37,13 @@ export class AuthService {
       );
     }
 
-    return this.generateToken(user);
+    const access_token = await this.generateAccessToken(user);
+    const refresh_token = await this.generateRefreshToken(user);
+
+    return {
+      access_token,
+      refresh_token,
+    };
   }
 
   async registration(userDto: CreateUserDto) {
@@ -55,14 +62,70 @@ export class AuthService {
     }
 
     const user = await this.userService.createUser(userDto);
-    return this.generateToken(user);
+
+    const access_token = await this.generateAccessToken(user);
+    const refresh_token = await this.generateRefreshToken(user);
+
+    return {
+      access_token,
+      refresh_token,
+    };
   }
 
-  async generateToken(user: CreateUserDto) {
+  generateAccessToken(user: CreateUserDto): Promise<string> {
     const payload = { phone_number: user.phone_number };
+
+    return this.jwtService.signAsync(payload, {
+      secret: 'service-testqwe232',
+      expiresIn: '1h',
+    });
+  }
+
+  generateRefreshToken(user: CreateUserDto): Promise<string> {
+    const payload = { phone_number: user.phone_number };
+
+    return this.jwtService.signAsync(payload, {
+      secret: 'tansdt*(12d/23_**&72332',
+      expiresIn: '1d',
+    });
+  }
+
+  async getPhoneFromRefreshToken(token) {
+    try {
+      return this.jwtService.verify(token, {
+        secret: 'tansdt*(12d/23_**&72332',
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async refresh(token): Promise<TokensDto> {
+    if (!token) {
+      throw new HttpException(
+        {
+          status: false,
+          error: 'Token empty',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const tokenData = await this.getPhoneFromRefreshToken(token);
+    const user: CreateUserDto = await this.userService.getUserByPhoneNumber(
+      tokenData?.phone_number,
+    );
+
+    if (!tokenData || !user) {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    const access_token = await this.generateAccessToken(user);
+    const refresh_token = await this.generateRefreshToken(user);
+
     return {
-      access_token: this.jwtService.sign(payload),
-      refresh_token: 'test',
+      access_token,
+      refresh_token,
     };
   }
 }

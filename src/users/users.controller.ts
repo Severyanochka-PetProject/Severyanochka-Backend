@@ -35,7 +35,7 @@ export class UsersController {
 
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer token',
+    description: 'token',
   })
   @ApiOperation({ summary: 'Получение списка пользователей' })
   @ApiResponse({ status: HttpStatus.OK, type: [CreateUserDto] })
@@ -48,7 +48,7 @@ export class UsersController {
 
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer token',
+    description: 'token',
   })
   @ApiResponse({ status: HttpStatus.OK, type: [GetUserDto] })
   @ApiOperation({ summary: 'Получение пользователя по его номеру телефона' })
@@ -66,6 +66,14 @@ export class UsersController {
     };
   }
 
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'token',
+  })
+  @ApiOperation({
+    summary: 'Получение информации при авторизации (ПОТОМ БУДЕТ ПО ТОКЕНУ)',
+  })
+  @ApiResponse({ status: HttpStatus.OK, type: [GetUserDto] })
   @UseGuards(AuthJwtGuard)
   @Get('/me')
   @HttpCode(HttpStatus.OK)

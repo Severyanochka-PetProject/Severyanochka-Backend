@@ -29,7 +29,7 @@ export class UsersService {
 
   async getUserByPhoneNumber(phone): Promise<CreateUserDto> {
     try {
-      console.log(await this.userRepository.findOne({ phone_number: phone }));
+      // console.log(await this.userRepository.findOne({ phone_number: phone }));
       return await this.userRepository.findOne({ phone_number: phone });
     } catch (e) {
       throw new HttpException(

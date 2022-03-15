@@ -11,12 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
   imports: [
     forwardRef(() => UsersModule),
     PassportModule,
-    JwtModule.register({
-      secret: 'service-testqwe232',
-      signOptions: {
-        expiresIn: '1h',
-      },
-    }),
+    JwtModule.register({}),
   ],
   exports: [AuthService, JwtModule],
 })
