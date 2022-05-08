@@ -8,7 +8,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
@@ -79,5 +79,9 @@ export class AuthController {
     this.authService.logout(refresh);
 
     response.clearCookie('refresh');
+
+    return {
+      status: true,
+    };
   }
 }
