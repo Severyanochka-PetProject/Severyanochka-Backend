@@ -8,7 +8,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
@@ -60,8 +60,24 @@ export class AuthController {
 
     response.cookie('refresh', tokens.refresh_token, { httpOnly: true });
 
-    console.log(tokens);
+    // console.log(tokens);
 
     return tokens.access_token;
+  }
+
+  @ApiOperation({
+    summary: 'Выход из личного кабинета',
+  })
+  @Post('/logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { refresh } = request.cookies;
+
+    this.authService.logout(refresh);
+
+    response.clearCookie('refresh');
   }
 }
