@@ -34,6 +34,7 @@ export class AuthController {
 
     response.cookie('refresh', tokens.refresh_token, {
       sameSite: 'none',
+      secure: true,
       httpOnly: true,
     });
 
