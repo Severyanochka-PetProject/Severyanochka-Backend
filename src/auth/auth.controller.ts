@@ -32,7 +32,11 @@ export class AuthController {
   ) {
     const tokens: TokensDto = await this.authService.login(userDto);
 
-    response.cookie('refresh', tokens.refresh_token, { httpOnly: true });
+    response.cookie('refresh', tokens.refresh_token, {
+      sameSite: 'none',
+      secure: true,
+      httpOnly: true,
+    });
 
     return tokens.access_token;
   }
@@ -47,14 +51,17 @@ export class AuthController {
   @ApiResponse({ type: TokensDto })
   @Get('/refresh')
   @HttpCode(HttpStatus.OK)
-  async refresh(@Req() request: Request, @Res({passthrough: true}) response: Response) {
-      const { refresh } = request.cookies;
-      const tokens: TokensDto = await this.authService.refresh(refresh);
-     
-      response.cookie('refresh', tokens.refresh_token, { httpOnly: true });
-      
-      console.log(tokens);
+  async refresh(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { refresh } = request.cookies;
+    const tokens: TokensDto = await this.authService.refresh(refresh);
 
-      return tokens.access_token;
+    response.cookie('refresh', tokens.refresh_token, { httpOnly: true });
+
+    console.log(tokens);
+
+    return tokens.access_token;
   }
 }
