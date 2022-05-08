@@ -3,7 +3,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
-import { TokensDto } from "./dto/tokens.dto";
+import { TokensDto } from './dto/tokens.dto';
 
 @Injectable()
 export class AuthService {
@@ -127,5 +127,19 @@ export class AuthService {
       access_token,
       refresh_token,
     };
+  }
+
+  logout(refreshToken: string): boolean {
+    if (!refreshToken) {
+      throw new HttpException(
+        {
+          status: false,
+          error: 'Token empty',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return true;
   }
 }
