@@ -61,15 +61,16 @@ export class AuthService {
       );
     }
 
-    const user = await this.userService.createUser(userDto);
+    try { 
+      const user = await this.userService.createUser(userDto);
 
-    const access_token = await this.generateAccessToken(user);
-    const refresh_token = await this.generateRefreshToken(user);
-
-    return {
-      access_token,
-      refresh_token,
-    };
+      return {
+        status: true,
+        msg: 'Вы успешно зарегистрировались'
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   generateAccessToken(user: CreateUserDto): Promise<string> {

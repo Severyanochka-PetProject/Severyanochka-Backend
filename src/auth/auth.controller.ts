@@ -41,7 +41,7 @@ export class AuthController {
     return tokens.access_token;
   }
 
-  @ApiResponse({ type: TokensDto })
+  @ApiResponse({ status: 200, description: 'Return object { status: true, msg: "..." }'})
   @Post('/registration')
   @HttpCode(HttpStatus.CREATED)
   registration(@Body() userDto: CreateUserDto) {
