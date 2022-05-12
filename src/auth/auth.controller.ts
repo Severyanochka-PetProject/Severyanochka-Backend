@@ -33,8 +33,8 @@ export class AuthController {
     const tokens: TokensDto = await this.authService.login(userDto);
 
     response.cookie('refresh', tokens.refresh_token, {
-      sameSite: 'none',
-      secure: true,
+      // sameSite: 'none',
+      // secure: true,
       httpOnly: true,
     });
 
