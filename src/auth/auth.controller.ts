@@ -47,8 +47,6 @@ export class AuthController {
       userVkDto.access_token,
     );
 
-    console.log(userVk);
-
     return userVk;
   }
 
