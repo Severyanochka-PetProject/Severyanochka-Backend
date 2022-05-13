@@ -15,3 +15,24 @@ export class LoginDto {
   })
   password: string;
 }
+
+export class LoginVkDto {
+  @ApiProperty({
+    required: true,
+    description: 'Token доступа к API VK',
+  })
+  access_token: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'E-mail от VK',
+  })
+  email: string | null;
+
+  @ApiProperty({
+    required: true,
+    example: 1234,
+    description: 'id пользователя VK',
+  })
+  user_id: number;
+}

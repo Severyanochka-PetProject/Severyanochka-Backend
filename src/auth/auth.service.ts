@@ -1,15 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { HttpService } from '@nestjs/axios';
+
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { TokensDto } from './dto/tokens.dto';
+import { map, Observable } from 'rxjs';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly httpService: HttpService,
   ) {}
 
   async login(userDto: LoginDto) {
@@ -46,6 +50,30 @@ export class AuthService {
     };
   }
 
+  async getUserDataFromVk(user_id: number, token: string): Promise<any> {
+    try {
+      return this.httpService
+        .get(
+          `https://api.vk.com/method/users.get?user_ids=${user_id}&fields=photo_400,home_town,contacts&access_token=${token}&v=5.89`,
+        )
+        .pipe(
+          map((res) => {
+            const user = res.data.response[0];
+
+            return {
+              avatar_url: user.photo_400,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              password: null,
+              phone_number: user.home_phone,
+            };
+          }),
+        );
+    } catch (e) {
+      return e;
+    }
+  }
+
   async registration(userDto: CreateUserDto) {
     const candidate = await this.userService.getUserByPhoneNumber(
       userDto.phone_number,
@@ -61,12 +89,12 @@ export class AuthService {
       );
     }
 
-    try { 
-      const user = await this.userService.createUser(userDto);
+    try {
+      await this.userService.createUser(userDto);
 
       return {
         status: true,
-        msg: 'Вы успешно зарегистрировались'
+        msg: 'Вы успешно зарегистрировались',
       };
     } catch (error) {
       return error;

@@ -14,7 +14,7 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { LoginDto } from './dto/login.dto';
+import { LoginDto, LoginVkDto } from './dto/login.dto';
 import { TokensDto } from './dto/tokens.dto';
 
 @ApiTags('Авторизация / Регистрация')
@@ -33,15 +33,29 @@ export class AuthController {
     const tokens: TokensDto = await this.authService.login(userDto);
 
     response.cookie('refresh', tokens.refresh_token, {
-      // sameSite: 'none',
-      // secure: true,
       httpOnly: true,
     });
 
     return tokens.access_token;
   }
 
-  @ApiResponse({ status: 200, description: 'Return object { status: true, msg: "..." }'})
+  @Post('/login-vk')
+  @HttpCode(HttpStatus.OK)
+  async LoginVk(@Body() userVkDto: LoginVkDto) {
+    const userVk = this.authService.getUserDataFromVk(
+      userVkDto.user_id,
+      userVkDto.access_token,
+    );
+
+    console.log(userVk);
+
+    return userVk;
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Return object { status: true, msg: "..." }',
+  })
   @Post('/registration')
   @HttpCode(HttpStatus.CREATED)
   registration(@Body() userDto: CreateUserDto) {
