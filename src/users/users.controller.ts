@@ -80,6 +80,8 @@ export class UsersController {
   async getMe(@Req() request): Promise<GetUserDto> {
     const { phone_number } = request.payload;
 
+    // console.log(phone_number);
+
     const user = await this.userService.getUserByPhoneNumber(phone_number);
 
     return {

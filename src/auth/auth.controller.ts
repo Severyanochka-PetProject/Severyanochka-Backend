@@ -41,13 +41,19 @@ export class AuthController {
 
   @Post('/login-vk')
   @HttpCode(HttpStatus.OK)
-  async LoginVk(@Body() userVkDto: LoginVkDto) {
-    const userVk = this.authService.getUserDataFromVk(
-      userVkDto.user_id,
-      userVkDto.access_token,
-    );
+  async LoginVk(
+    @Body() userVkDto: LoginVkDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const status: TokensDto = await this.authService.loginVk(userVkDto);
 
-    return userVk;
+    if (status.access_token) {
+      response.cookie('refresh', status.refresh_token, {
+        httpOnly: true,
+      });
+    }
+
+    return status.access_token;
   }
 
   @ApiResponse({

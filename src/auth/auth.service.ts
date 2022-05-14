@@ -1,19 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { HttpService } from '@nestjs/axios';
 
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
-import { LoginDto } from './dto/login.dto';
+import { LoginDto, LoginVkDto } from './dto/login.dto';
 import { TokensDto } from './dto/tokens.dto';
-import { map, Observable } from 'rxjs';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly httpService: HttpService,
   ) {}
 
   async login(userDto: LoginDto) {
@@ -50,28 +47,61 @@ export class AuthService {
     };
   }
 
-  async getUserDataFromVk(user_id: number, token: string): Promise<any> {
-    try {
-      return this.httpService
-        .get(
-          `https://api.vk.com/method/users.get?user_ids=${user_id}&fields=photo_400,home_town,contacts&access_token=${token}&v=5.89`,
-        )
-        .pipe(
-          map((res) => {
-            const user = res.data.response[0];
+  async loginVk(userVkDto: LoginVkDto) {
+    let candidate;
 
-            return {
-              avatar_url: user.photo_400,
-              first_name: user.first_name,
-              last_name: user.last_name,
-              password: null,
-              phone_number: user.home_phone,
-            };
-          }),
+    candidate = await this.userService.getUserByVkId(userVkDto.vk_user_id);
+
+    if (!candidate) {
+      const userVk = await this.userService.getUserDataFromVk(
+        userVkDto.vk_user_id,
+        userVkDto.access_token,
+      );
+
+      if (!userVkDto.phone_number) {
+        throw new HttpException(
+          {
+            status: false,
+            error_type: 0,
+            error: 'Необходимо указать номер телефона',
+            user: userVk,
+          },
+          HttpStatus.BAD_REQUEST,
         );
-    } catch (e) {
-      return e;
+      }
+
+      const isPhoneNumberExist = await this.userService.getUserByPhoneNumber(
+        userVkDto.phone_number,
+      );
+
+      if (isPhoneNumberExist) {
+        throw new HttpException(
+          {
+            status: false,
+            error_type: 1,
+            error: 'Этот номер телефона уже используется',
+            user: userVk,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const { phone_number, vk_user_id } = userVkDto;
+
+      candidate = await this.userService.createUser({
+        ...userVk,
+        phone_number,
+        vk_user_id,
+      });
     }
+
+    const access_token = await this.generateAccessToken(candidate);
+    const refresh_token = await this.generateRefreshToken(candidate);
+
+    return {
+      access_token,
+      refresh_token,
+    };
   }
 
   async registration(userDto: CreateUserDto) {

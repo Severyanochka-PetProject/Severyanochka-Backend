@@ -34,5 +34,12 @@ export class LoginVkDto {
     example: 1234,
     description: 'id пользователя VK',
   })
-  user_id: number;
+  vk_user_id: number;
+
+  @ApiProperty({
+    required: false,
+    example: '79163472537',
+    description: 'При первом входе необходим номер телефона',
+  })
+  phone_number: string;
 }

@@ -23,9 +23,10 @@ export class CreateUserDto {
 
   @ApiProperty({
     example: '79162265523',
-    description: 'Пароль от аккаунта',
+    description:
+      'Пароль от аккаунта (При входе через соц. сети пароль отсутсвует)',
   })
-  password: string;
+  password?: string;
 
   @ApiProperty({
     example: '79162265523',
@@ -39,4 +40,10 @@ export class CreateUserDto {
     required: false,
   })
   avatar_url?: string;
+
+  @ApiProperty({
+    description: 'При авторизации через VK',
+    required: false,
+  })
+  vk_user_id?: number;
 }

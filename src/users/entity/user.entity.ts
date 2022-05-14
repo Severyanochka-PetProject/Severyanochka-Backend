@@ -22,14 +22,19 @@ export class UserEntity {
   })
   phone_number: string;
 
-  @Column('character varying', {
-    length: 100,
+  @Column('text', {
     nullable: true,
   })
   avatar_url: string;
 
   @Column('character varying', {
     length: 16,
+    nullable: true,
   })
   password: string;
+
+  @Column('integer', {
+    nullable: true,
+  })
+  vk_user_id: number;
 }
