@@ -53,18 +53,13 @@ export class AuthService {
     candidate = await this.userService.getUserByVkId(userVkDto.vk_user_id);
 
     if (!candidate) {
-      const userVk = await this.userService.getUserDataFromVk(
-        userVkDto.vk_user_id,
-        userVkDto.access_token,
-      );
-
       if (!userVkDto.phone_number) {
         throw new HttpException(
           {
             status: false,
             error_type: 0,
             error: 'Необходимо указать номер телефона',
-            user: userVk,
+            user: userVkDto,
           },
           HttpStatus.BAD_REQUEST,
         );
@@ -80,7 +75,7 @@ export class AuthService {
             status: false,
             error_type: 1,
             error: 'Этот номер телефона уже используется',
-            user: userVk,
+            user: userVkDto,
           },
           HttpStatus.BAD_REQUEST,
         );
@@ -89,7 +84,7 @@ export class AuthService {
       const { phone_number, vk_user_id } = userVkDto;
 
       candidate = await this.userService.createUser({
-        ...userVk,
+        ...userVkDto,
         phone_number,
         vk_user_id,
       });

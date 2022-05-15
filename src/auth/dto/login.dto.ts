@@ -19,27 +19,13 @@ export class LoginDto {
 export class LoginVkDto {
   @ApiProperty({
     required: true,
-    description: 'Token доступа к API VK',
-  })
-  access_token: string;
-
-  @ApiProperty({
-    required: false,
-    description: 'E-mail от VK',
-  })
-  email: string | null;
-
-  @ApiProperty({
-    required: true,
-    example: 1234,
+    example: 12342,
     description: 'id пользователя VK',
   })
   vk_user_id: number;
-
-  @ApiProperty({
-    required: false,
-    example: '79163472537',
-    description: 'При первом входе необходим номер телефона',
-  })
-  phone_number: string;
+  phone_number: string | undefined;
+  email?: string;
+  first_name: string;
+  last_name: string;
+  avatar_url?: string;
 }
