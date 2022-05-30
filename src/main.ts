@@ -15,6 +15,8 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  app.setGlobalPrefix('api/v1');
+
   const config = new DocumentBuilder()
     .setTitle('Severyanochka API')
     .setDescription('Документация по Severyanochka REST API')
