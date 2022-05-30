@@ -4,10 +4,10 @@ import { UserEntity } from '../users/entity/user.entity';
 const dbConfig: TypeOrmModuleOptions = {
   type: 'postgres',
   host: 'localhost',
-  port: 5433,
-  username: 'postgres',
+  port: 5432,
+  username: 'tank',
   password: 'Qwerty',
-  database: 'Severyanochka',
+  database: 'severyanochka',
   entities: [UserEntity],
   synchronize: true,
 };

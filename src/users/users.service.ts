@@ -67,6 +67,7 @@ export class UsersService {
           )
           .pipe(
             map((res) => {
+	      console.log(res);
               const user = res.data.response[0];
 
               return {
