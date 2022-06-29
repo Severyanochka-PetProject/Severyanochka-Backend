@@ -9,9 +9,9 @@ import { FilesModule } from './files/files.module';
 @Module({
   imports: [
     UsersModule,
-    TypeOrmModule.forRoot(dbConfig),
     AuthModule,
     FilesModule,
+    TypeOrmModule.forRoot(dbConfig),
   ],
 })
 export class AppModule {}
