@@ -13,6 +13,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
+      'https://localhost:3000',
       'https://tankistpro-food.ru',
       'https://www.tankistpro-food.ru',
     ],
