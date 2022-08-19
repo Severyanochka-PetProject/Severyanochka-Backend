@@ -74,11 +74,12 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const { refresh } = request.cookies;
+    console.log(request.cookies);
     const tokens: TokensDto = await this.authService.refresh(refresh);
 
     response.cookie('refresh', tokens.refresh_token, { httpOnly: true });
 
-    // console.log(tokens);
+    console.log(tokens);
 
     return tokens.access_token;
   }
