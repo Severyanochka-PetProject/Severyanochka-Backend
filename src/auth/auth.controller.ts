@@ -79,7 +79,7 @@ export class AuthController {
 
     response.cookie('refresh', tokens.refresh_token, {
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: false,
     });
 
     return tokens.access_token;
