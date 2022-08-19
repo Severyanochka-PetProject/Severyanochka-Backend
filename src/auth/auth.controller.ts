@@ -34,6 +34,8 @@ export class AuthController {
 
     response.cookie('refresh', tokens.refresh_token, {
       httpOnly: true,
+      sameSite: 'none',
+      secure: true
     });
 
     return tokens.access_token;
@@ -50,6 +52,8 @@ export class AuthController {
     if (status.access_token) {
       response.cookie('refresh', status.refresh_token, {
         httpOnly: true,
+	sameSite: 'none',
+	secure: true
       });
     }
 
@@ -79,7 +83,8 @@ export class AuthController {
 
     response.cookie('refresh', tokens.refresh_token, {
       httpOnly: true,
-      sameSite: false,
+      sameSite: 'none',
+      secure: true
     });
 
     return tokens.access_token;
@@ -98,7 +103,10 @@ export class AuthController {
 
     this.authService.logout(refresh);
 
-    response.clearCookie('refresh');
+    response.clearCookie('refresh', {
+    	sameSite: 'none',
+	secure: true
+    });
 
     return {
       status: true,
