@@ -77,9 +77,10 @@ export class AuthController {
     console.log(request.cookies);
     const tokens: TokensDto = await this.authService.refresh(refresh);
 
-    response.cookie('refresh', tokens.refresh_token, { httpOnly: true });
-
-    console.log(tokens);
+    response.cookie('refresh', tokens.refresh_token, {
+      httpOnly: true,
+      sameSite: 'none',
+    });
 
     return tokens.access_token;
   }
