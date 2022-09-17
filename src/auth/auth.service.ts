@@ -6,6 +6,8 @@ import { UsersService } from '../users/users.service';
 import { LoginDto, LoginVkDto } from './dto/login.dto';
 import { TokensDto } from './dto/tokens.dto';
 
+import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,7 +30,12 @@ export class AuthService {
       );
     }
 
-    if (user.password !== userDto.password) {
+    const isPasswordMatch = await this.comparePassword(
+      userDto.password,
+      user.password,
+    );
+
+    if (!isPasswordMatch) {
       throw new HttpException(
         {
           status: false,
@@ -115,6 +122,7 @@ export class AuthService {
     }
 
     try {
+      userDto.password = await this.createHashPassword(userDto.password);
       await this.userService.createUser(userDto);
 
       return {
@@ -195,5 +203,18 @@ export class AuthService {
     }
 
     return true;
+  }
+
+  async createHashPassword(password: string): Promise<string> {
+    const saltRounds = 16;
+
+    return await bcrypt.hash(password, saltRounds);
+  }
+
+  async comparePassword(
+    password: string,
+    passwordHash: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(password, passwordHash);
   }
 }

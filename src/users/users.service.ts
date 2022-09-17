@@ -3,7 +3,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
 import { Repository } from 'typeorm';
-import { GetUserDto } from './dto/get-user.dto';
 import { firstValueFrom, map } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 
@@ -67,7 +66,7 @@ export class UsersService {
           )
           .pipe(
             map((res) => {
-	      console.log(res);
+              console.log(res);
               const user = res.data.response[0];
 
               return {
