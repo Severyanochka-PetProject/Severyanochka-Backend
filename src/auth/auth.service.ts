@@ -135,7 +135,12 @@ export class AuthService {
   }
 
   generateAccessToken(user: CreateUserDto): Promise<string> {
-    const payload = { phone_number: user.phone_number };
+    const payload = { 
+      id_user: user.id_user,
+      phone_number: user.phone_number, 
+      first_name: user.first_name,
+      last_name: user.last_name
+     };
 
     return this.jwtService.signAsync(payload, {
       secret: 'service-testqwe232',
@@ -144,7 +149,12 @@ export class AuthService {
   }
 
   generateRefreshToken(user: CreateUserDto): Promise<string> {
-    const payload = { phone_number: user.phone_number };
+    const payload = { 
+      id_user: user.id_user,
+      phone_number: user.phone_number, 
+      first_name: user.first_name,
+      last_name: user.last_name
+     };
 
     return this.jwtService.signAsync(payload, {
       secret: 'tansdt*(12d/23_**&72332',
@@ -216,5 +226,33 @@ export class AuthService {
     passwordHash: string,
   ): Promise<boolean> {
     return await bcrypt.compare(password, passwordHash);
+  }
+
+  async validateToken(token: string | null) {
+    if (!token) {
+      throw new HttpException(
+        {
+          status: false,
+          error: 'Token empty',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    try {
+      const payload = this.jwtService.verify(token, {
+        secret: 'service-testqwe232',
+      });
+
+      return {
+        status: true,
+        payload
+      };
+    } catch (e) {
+      return {
+        status: false,
+        error: "Invalid token"
+      };
+    }
   }
 }

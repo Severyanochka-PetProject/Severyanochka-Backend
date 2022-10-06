@@ -35,7 +35,7 @@ export class AuthController {
     response.cookie('refresh', tokens.refresh_token, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true
+      secure: true,
     });
 
     return tokens.access_token;
@@ -52,8 +52,8 @@ export class AuthController {
     if (status.access_token) {
       response.cookie('refresh', status.refresh_token, {
         httpOnly: true,
-	sameSite: 'none',
-	secure: true
+        sameSite: 'none',
+        secure: true,
       });
     }
 
@@ -84,7 +84,7 @@ export class AuthController {
     response.cookie('refresh', tokens.refresh_token, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true
+      secure: true,
     });
 
     return tokens.access_token;
@@ -104,12 +104,28 @@ export class AuthController {
     this.authService.logout(refresh);
 
     response.clearCookie('refresh', {
-    	sameSite: 'none',
-	secure: true
+      sameSite: 'none',
+      secure: true,
     });
 
     return {
       status: true,
     };
+  }
+
+
+  @ApiOperation({
+    summary: 'Проверка валидности access-token',
+  })
+  @Post('/validate')
+  @HttpCode(HttpStatus.OK)
+  async validate(
+    @Req() request: Request,
+  ) {
+    const token = request.headers.authorization;
+
+    const response = this.authService.validateToken(token);
+
+    return response;
   }
 }
