@@ -137,7 +137,7 @@ export class AuthService {
   generateAccessToken(user: CreateUserDto): Promise<string> {
     const payload = { 
       id_user: user.id_user,
-      phone_number: user.phone_number, 
+      phone_number: user.phone_number,
       first_name: user.first_name,
       last_name: user.last_name
      };
