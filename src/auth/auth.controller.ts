@@ -117,7 +117,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Проверка валидности access-token',
   })
-  @Post('/validate')
+  @Get('/validate')
   @HttpCode(HttpStatus.OK)
   async validate(
     @Req() request: Request,
